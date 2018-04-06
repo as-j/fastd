@@ -257,14 +257,16 @@ void fastd_peer_reset_socket(fastd_peer_t *peer) {
 static void schedule_peer_task(fastd_peer_t *peer) {
 	fastd_timeout_t timeout = fastd_timeout_min(peer->reset_timeout,
 						    fastd_timeout_min(peer->keepalive_timeout,
-								      peer->next_handshake));
+                                peer->next_handshake));
+
+	pr_debug2("Timeouts %P, reset: %T ka: %T hs: %T", peer, peer->reset_timeout-ctx.now, peer->keepalive_timeout, peer->next_handshake);
 
 	if (timeout == FASTD_TIMEOUT_INV) {
 		pr_debug2("Removing scheduled task for %P", peer);
 		fastd_task_unschedule(&peer->task);
 	}
 	else if (fastd_task_timeout(&peer->task) > timeout) {
-		pr_debug2("Replacing scheduled task for %P", peer);
+		pr_debug2("Replacing scheduled task for %P with timeout: %T", peer, timeout);
 		fastd_task_unschedule(&peer->task);
 		fastd_task_schedule(&peer->task, TASK_TYPE_PEER, timeout);
 	}
@@ -675,6 +677,15 @@ bool fastd_peer_claim_address(fastd_peer_t *new_peer, fastd_socket_t *sock, cons
 	return true;
 }
 
+/** Sends a keep alive now and resets the timer */
+void fastd_peer_send_keepalive(fastd_peer_t *peer) {
+	if (peer->state == STATE_ESTABLISHED) {
+		pr_debug("triggering a keepalive peer %P", peer);
+		fastd_peer_force_keepalive(peer);
+		schedule_peer_task(peer);
+	}
+}
+
 /** Resets and re-initializes a peer */
 void fastd_peer_reset(fastd_peer_t *peer) {
 	if (peer->state != STATE_INACTIVE) {
@@ -1033,5 +1044,15 @@ void fastd_peer_reset_all(void) {
 			fastd_peer_reset(peer);
 			i++;
 		}
+	}
+}
+
+/** Trigger keepalives for peers */
+void fastd_peer_trigger_keepalives_all(void) {
+	size_t i;
+	for (i = 0; i < VECTOR_LEN(ctx.peers);) {
+		fastd_peer_t *peer = VECTOR_INDEX(ctx.peers, i);
+		fastd_peer_send_keepalive(peer);
+		i++;
 	}
 }
