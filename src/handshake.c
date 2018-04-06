@@ -328,7 +328,7 @@ static inline fastd_handshake_t parse_tlvs(const fastd_buffer_t *buffer) {
 		if (ptr+4 > end)
 			break;
 
-		uint16_t type, len;
+		uint16_t type = 0, len = 0;
 
 		if (!handshake.little_endian) {
 			type = ptr[1] + (ptr[0] << 8);

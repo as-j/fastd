@@ -64,6 +64,7 @@ fastd_context_t ctx = {};
 
 
 static volatile bool sig_reload = false;	/**< Is set to true when a SIGHUP is received */
+static volatile bool sig_winch = false;		/**< Is set to true when a SIGWINCH is received */
 static volatile bool sig_reset = false;		/**< Is set to true when a SIGUSR2 is received */
 static volatile bool sig_child = false;		/**< Is set to true when a SIGCHLD is received */
 static volatile int sig_terminate = 0;		/**< Holds the signal number when a SIGTERM, SIGQUIT or SIGINT is received */
@@ -74,6 +75,10 @@ static void on_signal(int signo) {
 	switch(signo) {
 	case SIGHUP:
 		sig_reload = true;
+		break;
+
+	case SIGWINCH:
+		sig_winch = true;
 		break;
 
 	case SIGUSR2:
@@ -116,6 +121,8 @@ static void init_signals(void) {
 
 	action.sa_handler = on_signal;
 	if (sigaction(SIGHUP, &action, NULL))
+		exit_errno("sigaction");
+	if (sigaction(SIGWINCH, &action, NULL))
 		exit_errno("sigaction");
 	if (sigaction(SIGUSR2, &action, NULL))
 		exit_errno("sigaction");
@@ -617,6 +624,14 @@ static inline void handle_signals(void) {
 		pr_info("triggered reset of all connections");
 
 		fastd_peer_reset_all();
+	}
+
+	if (sig_winch) {
+		sig_winch = false;
+
+		pr_debug2("trigger keepalive of all connections");
+
+		fastd_peer_trigger_keepalives_all();
 	}
 
 	if (sig_child) {

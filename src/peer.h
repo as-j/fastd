@@ -157,7 +157,7 @@ bool fastd_peer_find_by_eth_addr(const fastd_eth_addr_t addr, fastd_peer_t **pee
 void fastd_peer_handle_task(fastd_task_t *task);
 void fastd_peer_eth_addr_cleanup(void);
 void fastd_peer_reset_all(void);
-
+void fastd_peer_trigger_keepalives_all(void);
 
 /** Returns the port of a fastd_peer_address_t (in network byte order) */
 static inline uint16_t fastd_peer_address_get_port(const fastd_peer_address_t *addr) {
@@ -259,6 +259,11 @@ static inline bool fastd_peer_is_established(const fastd_peer_t *peer) {
 /** Signals that a valid packet was received from the peer */
 static inline void fastd_peer_seen(fastd_peer_t *peer) {
 	peer->reset_timeout = ctx.now + PEER_STALE_TIME;
+}
+
+/** Sets the keepalive timeout to now */
+static inline void fastd_peer_force_keepalive(fastd_peer_t *peer) {
+	peer->keepalive_timeout = ctx.now;
 }
 
 /** Resets the keepalive timeout */
