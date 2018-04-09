@@ -118,7 +118,8 @@ static json_object * dump_peer(const fastd_peer_t *peer) {
 	json_object_object_add(ret, "address", json_object_new_string(addr_buf));
 
 	if (!ctx.iface)
-		json_object_object_add(ret, "interface", dump_iface(peer->iface));
+		if (peer->iface)
+			json_object_object_add(ret, "interface", dump_iface(peer->iface));
 
 	struct json_object *connection = NULL;
 
