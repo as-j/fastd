@@ -68,6 +68,7 @@ static void default_config(void) {
 	conf.mtu = 1500;
 	conf.mode = MODE_TAP;
 	conf.iface_persist = true;
+	conf.keepalive_time = KEEPALIVE_TIMEOUT;
 
 	conf.secure_handshakes = true;
 	conf.drop_caps = DROP_CAPS_ON;

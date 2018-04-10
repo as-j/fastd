@@ -96,6 +96,7 @@
 %token TOK_IP
 %token TOK_IPV4
 %token TOK_IPV6
+%token TOK_KEEPALIVE
 %token TOK_KEY
 %token TOK_LEVEL
 %token TOK_LIMIT
@@ -126,6 +127,7 @@
 %token TOK_SYNC
 %token TOK_SYSLOG
 %token TOK_TAP
+%token TOK_TIME
 %token TOK_TO
 %token TOK_TUN
 %token TOK_UP
@@ -188,6 +190,7 @@ statement:	peer_group_statement
 	|	TOK_LOG log ';'
 	|	TOK_HIDE hide ';'
 	|	TOK_INTERFACE interface ';'
+	|	TOK_KEEPALIVE keepalive ';'
 	|	TOK_BIND bind ';'
 	|	TOK_PACKET TOK_MARK packet_mark ';'
 	|	TOK_MTU mtu ';'
@@ -288,6 +291,11 @@ log:		TOK_LEVEL log_level {
 
 persist:	TOK_INTERFACE boolean {
 			conf.iface_persist = $2;
+		}
+	;
+
+keepalive:	TOK_TIME TOK_UINT {
+			conf.keepalive_time = $2;
 		}
 	;
 

@@ -221,6 +221,7 @@ struct fastd_config {
 	bool forward;				/**< Specifies if packet forwarding is enable */
 	bool secure_handshakes;			/**< Can be set to false to support connections with fastd versions before v11 */
 
+	fastd_timeout_t keepalive_time; /**< Specifies the time between keepalives */
 	fastd_drop_caps_t drop_caps;		/**< Specifies if and when to drop capabilities */
 
 #ifdef USE_USER
