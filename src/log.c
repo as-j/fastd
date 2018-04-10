@@ -126,6 +126,7 @@ static int fastd_vsnprintf(char *buffer, size_t size, const char *format, va_lis
 	for (; *format; format++) {
 		const void *p;
 		const char *iface;
+		int64_t i64;
 		const fastd_eth_addr_t *eth_addr;
 
 		if (buffer >= buffer_end)
@@ -161,7 +162,12 @@ static int fastd_vsnprintf(char *buffer, size_t size, const char *format, va_lis
 			break;
 
 		case 'T':
-			buffer += snprintf_safe(buffer, buffer_end-buffer, "%lli", (unsigned long long)va_arg(ap, int64_t)-ctx.now);
+			i64 = va_arg(ap, int64_t);
+			if (i64 == INT64_MAX)
+				i64 = -1;
+			else
+				i64 -= ctx.now;
+			buffer += snprintf_safe(buffer, buffer_end-buffer, "%lli", (unsigned long long)i64);
 			break;
 
 		case 's':
