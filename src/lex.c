@@ -123,6 +123,7 @@ static const keyword_t keywords[] = {
 	{ "sync", TOK_SYNC },
 	{ "syslog", TOK_SYSLOG },
 	{ "tap", TOK_TAP },
+	{ "time", TOK_TIME },
 	{ "to", TOK_TO },
 	{ "tun", TOK_TUN },
 	{ "up", TOK_UP },
