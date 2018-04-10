@@ -60,6 +60,7 @@ typedef struct fastd_tristate {
 typedef enum fastd_packet_type {
 	PACKET_HANDSHAKE = 1,	/**< Packet type \em handshake (used to negotiate a session) */
 	PACKET_DATA = 2,	/**< Packet type \em data (used for payload data) */
+	PACKET_KEEPALIVE_REQUEST = 3,	/**< Packet type \em keepalive (used to send and receive a keepalive) */
 } fastd_packet_type_t;
 
 /** The supported modes of operation */

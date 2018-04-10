@@ -186,6 +186,10 @@ static inline void handle_socket_receive_known(fastd_socket_t *sock, const fastd
 
 	case PACKET_HANDSHAKE:
 		fastd_handshake_handle(sock, local_addr, remote_addr, peer, buffer);
+		break;
+	case PACKET_KEEPALIVE_REQUEST:
+		fastd_handle_receive_keepalive(peer);
+		break;
 	}
 }
 

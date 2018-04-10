@@ -262,15 +262,17 @@ static inline void fastd_peer_seen(fastd_peer_t *peer) {
 	peer->reset_timeout = ctx.now + PEER_STALE_TIME;
 }
 
-/** Sets the keepalive timeout to now */
-static inline void fastd_peer_force_keepalive(fastd_peer_t *peer) {
-	peer->keepalive_timeout = ctx.now;
-}
-
 /** Resets the keepalive timeout */
 static inline void fastd_peer_clear_keepalive(fastd_peer_t *peer) {
-	peer->keepalive_timeout = ctx.now + KEEPALIVE_TIMEOUT;
+	peer->keepalive_timeout = ctx.now + conf.keepalive_time;
 }
+
+/** Sets the keepalive timeout to now */
+static inline void fastd_peer_force_keepalive(fastd_peer_t *peer) {
+	fastd_peer_clear_keepalive(peer);
+	fastd_send_keepalive_request(peer->sock, &peer->local_address, &peer->address, peer);
+}
+
 
 /** Checks if a peer uses dynamic sockets (which means that each connection attempt uses a new socket) */
 static inline bool fastd_peer_is_socket_dynamic(const fastd_peer_t *peer) {

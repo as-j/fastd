@@ -166,7 +166,6 @@ static void protocol_handle_recv(fastd_peer_t *peer, fastd_buffer_t buffer) {
 		fastd_handle_receive(peer, recv_buffer, reordered);
 	}
 	else {
-		fastd_handle_receive_keepalive(peer);
 		fastd_buffer_free(recv_buffer);
 	}
 
