@@ -158,7 +158,8 @@ void fastd_peer_handle_task(fastd_task_t *task);
 void fastd_peer_eth_addr_cleanup(void);
 void fastd_peer_reset_all(void);
 void fastd_peer_trigger_keepalives_all(void);
-void fastd_peer_send_keepalive(fastd_peer_t *peer);
+void fastd_peer_send_keepalive_request(fastd_peer_t *peer);
+void fastd_peer_send_keepalive_reply(fastd_peer_t *peer);
 
 /** Returns the port of a fastd_peer_address_t (in network byte order) */
 static inline uint16_t fastd_peer_address_get_port(const fastd_peer_address_t *addr) {
@@ -259,6 +260,7 @@ static inline bool fastd_peer_is_established(const fastd_peer_t *peer) {
 
 /** Signals that a valid packet was received from the peer */
 static inline void fastd_peer_seen(fastd_peer_t *peer) {
+    pr_debug("Marking peer seen %P", peer);
 	peer->reset_timeout = ctx.now + PEER_STALE_TIME;
 }
 
@@ -266,13 +268,6 @@ static inline void fastd_peer_seen(fastd_peer_t *peer) {
 static inline void fastd_peer_clear_keepalive(fastd_peer_t *peer) {
 	peer->keepalive_timeout = ctx.now + conf.keepalive_time;
 }
-
-/** Sets the keepalive timeout to now */
-static inline void fastd_peer_force_keepalive(fastd_peer_t *peer) {
-	fastd_peer_clear_keepalive(peer);
-	fastd_send_keepalive_request(peer->sock, &peer->local_address, &peer->address, peer);
-}
-
 
 /** Checks if a peer uses dynamic sockets (which means that each connection attempt uses a new socket) */
 static inline bool fastd_peer_is_socket_dynamic(const fastd_peer_t *peer) {

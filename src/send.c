@@ -189,6 +189,11 @@ void fastd_send_keepalive_request(const fastd_socket_t *sock, const fastd_peer_a
 	fastd_buffer_t buffer = fastd_buffer_alloc(0, conf.min_encrypt_head_space, conf.min_encrypt_tail_space);
 	send_type(sock, local_addr, remote_addr, peer, PACKET_KEEPALIVE_REQUEST, buffer, 0);
 }
+/** Sends a keepalive_reply packet */
+void fastd_send_keepalive_reply(const fastd_socket_t *sock, const fastd_peer_address_t *local_addr, const fastd_peer_address_t *remote_addr, fastd_peer_t *peer) {
+	fastd_buffer_t buffer = fastd_buffer_alloc(0, conf.min_encrypt_head_space, conf.min_encrypt_tail_space);
+	send_type(sock, local_addr, remote_addr, peer, PACKET_KEEPALIVE_REPLY, buffer, 0);
+}
 
 /** Encrypts and sends a payload packet to all peers */
 static inline void send_all(fastd_buffer_t buffer, fastd_peer_t *source) {
