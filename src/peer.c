@@ -677,15 +677,25 @@ bool fastd_peer_claim_address(fastd_peer_t *new_peer, fastd_socket_t *sock, cons
 	return true;
 }
 
-/** Sends a keep alive now and resets the timer */
-void fastd_peer_send_keepalive(fastd_peer_t *peer) {
+/** Sends a keep alive request and resets periodic timer */
+void fastd_peer_send_keepalive_request(fastd_peer_t *peer) {
 	if (peer->state == STATE_ESTABLISHED) {
-		pr_debug("triggering a keepalive peer %P", peer);
-		fastd_peer_force_keepalive(peer);
+		pr_debug("triggering a keepalive request peer %P", peer);
+		fastd_peer_clear_keepalive(peer);
+		fastd_send_keepalive_request(peer->sock, &peer->local_address, &peer->address, peer);
 		schedule_peer_task(peer);
 	}
 }
 
+/** Sends a keep alive now and resets the timer */
+void fastd_peer_send_keepalive_reply(fastd_peer_t *peer) {
+	if (peer->state == STATE_ESTABLISHED) {
+		pr_debug("triggering a keepalive reply for peer %P", peer);
+		fastd_send_keepalive_reply(peer->sock, &peer->local_address, &peer->address, peer);
+		fastd_peer_clear_keepalive(peer);
+		schedule_peer_task(peer);
+	}
+}
 /** Resets and re-initializes a peer */
 void fastd_peer_reset(fastd_peer_t *peer) {
 	if (peer->state != STATE_INACTIVE) {
@@ -1052,7 +1062,7 @@ void fastd_peer_trigger_keepalives_all(void) {
 	size_t i;
 	for (i = 0; i < VECTOR_LEN(ctx.peers);) {
 		fastd_peer_t *peer = VECTOR_INDEX(ctx.peers, i);
-		fastd_peer_send_keepalive(peer);
+		fastd_peer_send_keepalive_request(peer);
 		i++;
 	}
 }
