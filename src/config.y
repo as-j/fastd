@@ -86,6 +86,7 @@
 %token TOK_FLOAT
 %token TOK_FORCE
 %token TOK_FORWARD
+%token TOK_KEEPALIVE
 %token TOK_FROM
 %token TOK_GROUP
 %token TOK_HANDSHAKES
@@ -194,6 +195,7 @@ statement:	peer_group_statement
 	|	TOK_PMTU pmtu ';'
 	|	TOK_MODE mode ';'
 	|	TOK_PERSIST persist ';'
+	|	TOK_KEEPALIVE keepalive ';'
 	|	TOK_PROTOCOL protocol ';'
 	|	TOK_SECRET secret ';'
 	|	TOK_ON TOK_PRE_UP on_pre_up ';'
@@ -288,6 +290,11 @@ log:		TOK_LEVEL log_level {
 
 persist:	TOK_INTERFACE boolean {
 			conf.iface_persist = $2;
+		}
+	;
+
+keepalive:	TOK_SYNC boolean {
+			conf.keepalive_sync = $2;
 		}
 	;
 
@@ -602,7 +609,6 @@ on_verify:	sync TOK_STRING {
 
 forward:	boolean		{ conf.forward = $1; }
 	;
-
 
 include:	TOK_PEER TOK_STRING maybe_as {
 			fastd_peer_t *peer = fastd_new0(fastd_peer_t);

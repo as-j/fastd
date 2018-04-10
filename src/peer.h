@@ -158,6 +158,7 @@ void fastd_peer_handle_task(fastd_task_t *task);
 void fastd_peer_eth_addr_cleanup(void);
 void fastd_peer_reset_all(void);
 void fastd_peer_trigger_keepalives_all(void);
+void fastd_peer_send_keepalive(fastd_peer_t *peer);
 
 /** Returns the port of a fastd_peer_address_t (in network byte order) */
 static inline uint16_t fastd_peer_address_get_port(const fastd_peer_address_t *addr) {

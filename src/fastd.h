@@ -220,6 +220,7 @@ struct fastd_config {
 #endif
 	bool forward;				/**< Specifies if packet forwarding is enable */
 	bool secure_handshakes;			/**< Can be set to false to support connections with fastd versions before v11 */
+	bool keepalive_sync;			/**< Specifies if we should send a handshake on receving one.  This can save power on mobile devices. */
 
 	fastd_drop_caps_t drop_caps;		/**< Specifies if and when to drop capabilities */
 
@@ -363,6 +364,7 @@ void fastd_receive_unknown_init(void);
 void fastd_receive_unknown_free(void);
 void fastd_receive(fastd_socket_t *sock);
 void fastd_handle_receive(fastd_peer_t *peer, fastd_buffer_t buffer, bool reordered);
+void fastd_handle_receive_keepalive(fastd_peer_t *peer);
 
 void fastd_close_all_fds(void);
 

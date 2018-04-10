@@ -315,3 +315,13 @@ void fastd_handle_receive(fastd_peer_t *peer, fastd_buffer_t buffer, bool reorde
 
 	fastd_buffer_free(buffer);
 }
+
+/** Handles a receveid keepalive, there is no payload */
+void fastd_handle_receive_keepalive(fastd_peer_t *peer) {
+    if (conf.keepalive_sync) {
+        pr_debug("Doing keepalive sync for %P", peer);
+        fastd_peer_send_keepalive(peer);
+    }
+}
+
+

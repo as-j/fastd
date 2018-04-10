@@ -256,7 +256,7 @@ void fastd_peer_reset_socket(fastd_peer_t *peer) {
 /** Schedules the peer maintenance task (or removes the scheduled task if there's nothing to do) */
 static void schedule_peer_task(fastd_peer_t *peer) {
 	fastd_timeout_t timeout = fastd_timeout_min(peer->reset_timeout,
-						    fastd_timeout_min(peer->keepalive_timeout,
+							fastd_timeout_min(peer->keepalive_timeout,
                                 peer->next_handshake));
 
 	pr_debug2("Timeouts %P, reset: %T ka: %T hs: %T", peer, peer->reset_timeout-ctx.now, peer->keepalive_timeout, peer->next_handshake);
@@ -680,6 +680,11 @@ bool fastd_peer_claim_address(fastd_peer_t *new_peer, fastd_socket_t *sock, cons
 /** Sends a keep alive now and resets the timer */
 void fastd_peer_send_keepalive(fastd_peer_t *peer) {
 	if (peer->state == STATE_ESTABLISHED) {
+		int64_t last = peer->keepalive_timeout - ctx.now;
+		if (last > 0 && last < 3000) {
+			pr_debug("Skipping keepalive last sent < 3s ago to peer: %P", peer);
+			return;
+		}
 		pr_debug("triggering a keepalive peer %P", peer);
 		fastd_peer_force_keepalive(peer);
 		schedule_peer_task(peer);

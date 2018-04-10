@@ -92,6 +92,7 @@ static const keyword_t keywords[] = {
 	{ "ip", TOK_IP },
 	{ "ipv4", TOK_IPV4 },
 	{ "ipv6", TOK_IPV6 },
+	{ "keepalive", TOK_KEEPALIVE },
 	{ "key", TOK_KEY },
 	{ "level", TOK_LEVEL },
 	{ "limit", TOK_LIMIT },
