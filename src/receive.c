@@ -189,9 +189,11 @@ static inline void handle_socket_receive_known(fastd_socket_t *sock, const fastd
 		break;
 	case PACKET_KEEPALIVE_REQUEST:
 		fastd_handle_receive_keepalive_request(peer);
+		fastd_buffer_free(buffer);
 		break;
 	case PACKET_KEEPALIVE_REPLY:
 		fastd_handle_receive_keepalive_reply(peer);
+		fastd_buffer_free(buffer);
 		break;
 	}
 }
