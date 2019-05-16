@@ -127,6 +127,7 @@
 %token TOK_SYNC
 %token TOK_SYSLOG
 %token TOK_TAP
+%token TOK_TIME
 %token TOK_TO
 %token TOK_TUN
 %token TOK_UP
@@ -295,6 +296,10 @@ persist:	TOK_INTERFACE boolean {
 
 keepalive:	TOK_SYNC boolean {
 			conf.keepalive_sync = $2;
+		}
+	|		TOK_TIME TOK_UINT {
+			conf.keepalive_time = $2;
+			printf("Setting keep alive to: %ld\n", conf.keepalive_time);
 		}
 	;
 

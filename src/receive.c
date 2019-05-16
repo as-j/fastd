@@ -186,6 +186,18 @@ static inline void handle_socket_receive_known(fastd_socket_t *sock, const fastd
 
 	case PACKET_HANDSHAKE:
 		fastd_handshake_handle(sock, local_addr, remote_addr, peer, buffer);
+		break;
+	case PACKET_KEEPALIVE_REQUEST:
+		fastd_handle_receive_keepalive_request(peer);
+		fastd_buffer_free(buffer);
+		break;
+	case PACKET_KEEPALIVE_REPLY:
+		fastd_handle_receive_keepalive_reply(peer);
+		fastd_buffer_free(buffer);
+		break;
+	default:
+		fastd_buffer_free(buffer);
+		break;
 	}
 }
 
@@ -316,13 +328,16 @@ void fastd_handle_receive(fastd_peer_t *peer, fastd_buffer_t buffer, bool reorde
 	fastd_buffer_free(buffer);
 }
 
-/** Handles a receveid keepalive, there is no payload */
-void fastd_handle_receive_keepalive(fastd_peer_t *peer) {
-    pr_debug("Got keepalive from peer %P", peer);
-    if (conf.keepalive_sync) {
-        pr_debug("Doing keepalive sync for %P", peer);
-        fastd_peer_send_keepalive(peer);
-    }
+/** Handles a received keepalive, there is no payload */
+void fastd_handle_receive_keepalive_request(fastd_peer_t *peer) {
+    pr_debug("Got keepalive request from peer %P", peer);
+    fastd_peer_seen(peer);
+    fastd_peer_send_keepalive_reply(peer);
 }
 
+/** Handles a received keepalive reply, there is no payload */
+void fastd_handle_receive_keepalive_reply(fastd_peer_t *peer) {
+    pr_debug("Got keepalive reply from peer %P", peer);
+    fastd_peer_seen(peer);
+}
 

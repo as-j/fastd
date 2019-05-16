@@ -221,7 +221,7 @@ struct fastd_config {
 	bool forward;				/**< Specifies if packet forwarding is enable */
 	bool secure_handshakes;			/**< Can be set to false to support connections with fastd versions before v11 */
 	bool keepalive_sync;			/**< Specifies if we should send a handshake on receving one.  This can save power on mobile devices. */
-
+	fastd_timeout_t keepalive_time; /**< Specifies the time between keepalives */
 	fastd_drop_caps_t drop_caps;		/**< Specifies if and when to drop capabilities */
 
 #ifdef USE_USER
@@ -359,12 +359,14 @@ extern fastd_config_t conf;
 void fastd_send(const fastd_socket_t *sock, const fastd_peer_address_t *local_addr, const fastd_peer_address_t *remote_addr, fastd_peer_t *peer, fastd_buffer_t buffer, size_t stat_size);
 void fastd_send_handshake(const fastd_socket_t *sock, const fastd_peer_address_t *local_addr, const fastd_peer_address_t *remote_addr, fastd_peer_t *peer, fastd_buffer_t buffer);
 void fastd_send_data(fastd_buffer_t buffer, fastd_peer_t *source, fastd_peer_t *dest);
-
+void fastd_send_keepalive_request(const fastd_socket_t *sock, const fastd_peer_address_t *local_addr, const fastd_peer_address_t *remote_addr, fastd_peer_t *peer);
+void fastd_send_keepalive_reply(const fastd_socket_t *sock, const fastd_peer_address_t *local_addr, const fastd_peer_address_t *remote_addr, fastd_peer_t *peer);
 void fastd_receive_unknown_init(void);
 void fastd_receive_unknown_free(void);
 void fastd_receive(fastd_socket_t *sock);
 void fastd_handle_receive(fastd_peer_t *peer, fastd_buffer_t buffer, bool reordered);
-void fastd_handle_receive_keepalive(fastd_peer_t *peer);
+void fastd_handle_receive_keepalive_reply(fastd_peer_t *peer);
+void fastd_handle_receive_keepalive_request(fastd_peer_t *peer);
 
 void fastd_close_all_fds(void);
 
