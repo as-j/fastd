@@ -195,6 +195,9 @@ static inline void handle_socket_receive_known(fastd_socket_t *sock, const fastd
 		fastd_handle_receive_keepalive_reply(peer);
 		fastd_buffer_free(buffer);
 		break;
+	default:
+		fastd_buffer_free(buffer);
+		break;
 	}
 }
 
