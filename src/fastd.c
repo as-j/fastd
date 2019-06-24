@@ -36,6 +36,7 @@
 
 #include "fastd.h"
 #include "async.h"
+#include "inotify.h"
 #include "config.h"
 #include "crypto.h"
 #include "peer.h"
@@ -539,6 +540,7 @@ static inline void init(int argc, char *argv[]) {
 
 	fastd_status_init();
 	fastd_async_init();
+	fastd_inotify_init();
 
 	fastd_socket_bind_all();
 

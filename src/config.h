@@ -64,5 +64,7 @@ void fastd_configure(int argc, char *const argv[]);
 void fastd_configure_peers(void);
 void fastd_config_check(void);
 void fastd_config_load_peer_dirs(bool dirs_only);
+void fastd_config_load_peer(const char *dir, const char *name);
+void fastd_config_delete_peer(const char *dir, const char *name);
 bool fastd_config_single_iface(void);
 bool fastd_config_persistent_ifaces(void);

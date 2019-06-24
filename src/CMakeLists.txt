@@ -25,6 +25,7 @@ add_executable(fastd
   hkdf_sha256.c
   fastd.c
   iface.c
+  inotify.c
   lex.c
   log.c
   options.c

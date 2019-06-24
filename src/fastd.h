@@ -323,6 +323,9 @@ struct fastd_context {
 
 	pthread_attr_t detached_thread;		/**< pthread_attr_t for creating detached threads */
 
+	fastd_poll_fd_t inotify_fd;		/**< The fd for the inotifier watching for config dir changes */
+	VECTOR(fastd_inotify_watch_descriptor_t *) inotify_wd; /**< A map from watch descriptor number to directory name */
+
 #ifdef __ANDROID__
 	int android_ctrl_sock_fd;		/**< The unix domain socket for communicating with Android GUI */
 #endif
