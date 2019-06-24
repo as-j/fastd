@@ -86,6 +86,7 @@ typedef enum fastd_poll_type {
 	POLL_TYPE_STATUS,	/**< The status socket */
 	POLL_TYPE_IFACE,	/**< A TUN/TAP interface */
 	POLL_TYPE_SOCKET,	/**< A network socket */
+	POLL_TYPE_INOTFY,	/**< A inotify fd */
 } fastd_poll_type_t;
 
 /** Task types */
@@ -143,6 +144,8 @@ typedef struct fastd_string_stack fastd_string_stack_t;
 
 typedef struct fastd_shell_command fastd_shell_command_t;
 typedef struct fastd_shell_env fastd_shell_env_t;
+
+typedef struct fastd_inotify_watch_descriptor fastd_inotify_watch_descriptor_t;
 
 
 /** A 128-bit aligned block of data, primarily used by the cryptographic functions */

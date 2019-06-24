@@ -32,6 +32,7 @@
 
 #include "poll.h"
 #include "async.h"
+#include "inotify.h"
 #include "peer.h"
 
 #include <signal.h>
@@ -106,6 +107,11 @@ static inline void handle_fd(fastd_poll_fd_t *fd, bool input, bool error) {
 
 		break;
 	}
+
+	case POLL_TYPE_INOTFY:
+		if (input)
+			fastd_inotify_handle();
+		break;
 
 	default:
 		exit_bug("unknown FD type");
