@@ -145,6 +145,10 @@ static int fastd_vsnprintf(char *buffer, size_t size, const char *format, va_lis
 			buffer += snprintf_safe(buffer, buffer_end-buffer, "%%");
 			break;
 
+		case 'c':
+			buffer += snprintf_safe(buffer, buffer_end-buffer, "%c", va_arg(ap, int));
+			break;
+
 		case 'i':
 			buffer += snprintf_safe(buffer, buffer_end-buffer, "%i", va_arg(ap, int));
 			break;
