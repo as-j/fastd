@@ -38,13 +38,9 @@
 
 /** Initializes the inotify notification sockets */
 void fastd_inotify_init(void) {
-	int fd = inotify_init1(IN_CLOEXEC);
+	int fd = inotify_init1(IN_CLOEXEC|IN_NONBLOCK);
 	if (fd == -1)
 		exit_errno("inotify");
-
-#ifdef NO_HAVE_SOCK_NONBLOCK
-	fastd_setnonblock(fd);
-#endif
 
 	ctx.inotify_fd = FASTD_POLL_FD(POLL_TYPE_INOTFY, fd);
 
@@ -65,10 +61,8 @@ void fastd_inotify_handle(void) {
 			__attribute__ ((aligned(__alignof__(struct inotify_event))));
 		const struct inotify_event *event;
 		ssize_t len = read(ctx.inotify_fd.fd, buf, sizeof(buf));
-		if (len == -1 && errno != EAGAIN) {
-			perror("read");
-			exit(EXIT_FAILURE);
-		}
+		if (len == -1 && errno != EAGAIN) 
+            exit_errno("inotify failed read");
 
 		/* If the nonblocking read() found no events to read, then
 		   it returns -1 with errno set to EAGAIN. In that case,
@@ -121,7 +115,7 @@ void fastd_inotify_handle(void) {
 				fastd_config_delete_peer(dir, name);
 			}
 			else {
-				pr_verbose("Doing reload due to: %s for peer: %s in dir: %s", type, name, dir);
+				pr_info("Doing reload due to: %s for peer: %s in dir: %s", type, name, dir);
 				fastd_config_load_peer(dir, name);
 			}
 		}

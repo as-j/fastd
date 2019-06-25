@@ -647,7 +647,7 @@ static void peer_dirs_read_peer_group(fastd_peer_group_t *group) {
 }
 
 static void configure_peer(fastd_peer_t *peer, bool dirs_only) {
-	pr_verbose("Calling configure on peer: %P: %i", peer, peer->config_state);
+	pr_info("Calling configure on peer: %P", peer);
 	if (peer->config_state == CONFIG_STATIC) {
 		/* The peer hasn't been touched since the last run of configure_peers(), so its definition must have disappeared */
 		fastd_peer_delete(peer);
@@ -705,6 +705,7 @@ void reset_peer_config_state(fastd_peer_t *peer) {
 		peer->config_state = CONFIG_NEW;
 	else if (peer->config_state == CONFIG_DISABLED)
 		peer->config_state = CONFIG_STATIC;
+	pr_info("Reset peer config state: %P", peer);
 }
 
 /** Refreshes the peer configurations from the configured peer dirs */
